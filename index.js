@@ -164,7 +164,7 @@ function excelWork(path) {
                                 var _a, _b, _c, _d;
                                 var targetSetDeclarations = groupedRawData[entityId]
                                     // фильтруем все записи для targetSet по caption
-                                    .filter(function (item) { return item.caption === rawItem.caption; })
+                                    .filter(function (item) { return item.field_name === rawItem.field_name; })
                                     // конвертируем в готовое значение таргет сетов
                                     .map(function (rawSetItem) {
                                     var valueMeta = Object.entries(rawSetItem)
@@ -216,8 +216,8 @@ function excelWork(path) {
                                     valueType: (_b = (_a = TYPES[rawItem.value_type]) === null || _a === void 0 ? void 0 : _a[0]) !== null && _b !== void 0 ? _b : rawItem.value_type,
                                     comment: rawItem.comment,
                                     fieldName: "VAL.".concat(rawItem.field_name),
-                                    flags: rawItem.is_required ? {
-                                        isRequired: rawItem.is_required
+                                    flags: rawItem.is_required === 'да' ? {
+                                        isRequired: rawItem.is_required === 'да'
                                     } : undefined,
                                     fieldType: (_d = (_c = TYPES[rawItem.value_type]) === null || _c === void 0 ? void 0 : _c[1]) !== null && _d !== void 0 ? _d : rawItem.value_type,
                                     expression: rawItem.expression,
@@ -225,7 +225,7 @@ function excelWork(path) {
                                         targetSetDeclaration: targetSetDeclarations
                                     }
                                 };
-                                if (!rawItem.is_required) {
+                                if (!Boolean(rawItem.is_required === 'да')) {
                                     delete processedItem.flags;
                                 }
                                 if (rawItem.value_type === 'DICTIONARY') {
@@ -291,7 +291,7 @@ function excelWork(path) {
                     }
                     result.forEach(function (builderRes) {
                         var builder = (0, xmlbuilder2_1.create)({ 'ns:entity': __assign(__assign({}, template), builderRes) }).end({ prettyPrint: true, format: 'xml' });
-                        var keyword = builderRes.keyword.trim() === '' ? 'UnknownKeyword' : builderRes.keyword.trim();
+                        var keyword = builderRes.entityId;
                         var parsedPath = (0, path_1.parse)(path);
                         var finalPath = (0, path_1.format)(__assign(__assign({}, parsedPath), { base: "".concat(keyword, ".xml"), dir: parsedPath.dir + '\\models' }));
                         (0, fs_1.writeFileSync)(finalPath, builder);

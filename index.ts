@@ -170,7 +170,7 @@ async function excelWork(path: string) {
                 .map(rawItem => {
                     const targetSetDeclarations = groupedRawData[entityId]
                         // фильтруем все записи для targetSet по caption
-                        .filter(item => item.caption === rawItem.caption)
+                        .filter(item => item.field_name === rawItem.field_name)
                         // конвертируем в готовое значение таргет сетов
                         .map(rawSetItem => {
                             const valueMeta = Object.entries(rawSetItem)
@@ -232,8 +232,8 @@ async function excelWork(path: string) {
                         valueType: TYPES[rawItem.value_type as keyof typeof TYPES]?.[0] ?? rawItem.value_type,
                         comment: rawItem.comment,
                         fieldName: `VAL.${rawItem.field_name}`,
-                        flags: rawItem.is_required ? {
-                                isRequired: rawItem.is_required
+                        flags: rawItem.is_required === 'да' ? {
+                                isRequired: rawItem.is_required === 'да'
                             } : undefined,
                         fieldType: TYPES[rawItem.value_type as keyof typeof TYPES]?.[1] ?? rawItem.value_type,
                         expression: rawItem.expression,
@@ -242,7 +242,7 @@ async function excelWork(path: string) {
                         }
                     }
 
-                    if(!rawItem.is_required) {
+                    if(!Boolean(rawItem.is_required === 'да')) {
                         delete processedItem.flags
                     }
 
@@ -422,7 +422,7 @@ async function excelWork(path: string) {
 
     result.forEach(builderRes => {
         const builder = create({'ns:entity': {...template, ...builderRes}}).end({prettyPrint: true, format: 'xml'})
-        const keyword = builderRes.keyword.trim() === '' ? 'UnknownKeyword' : builderRes.keyword.trim()
+        const keyword = builderRes.entityId
         const parsedPath = parse(path)
         const finalPath = format({...parsedPath, base: `${keyword}.xml`, dir: parsedPath.dir + '\\models'})
 
