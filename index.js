@@ -161,7 +161,7 @@ function excelWork(path) {
                             })
                                 // преобразуем в готовый объект
                                 .map(function (rawItem) {
-                                var _a, _b, _c, _d;
+                                var _a, _b, _c, _d, _e;
                                 var targetSetDeclarations = groupedRawData[entityId]
                                     // фильтруем все записи для targetSet по caption
                                     .filter(function (item) { return item.field_name === rawItem.field_name; })
@@ -216,20 +216,20 @@ function excelWork(path) {
                                     valueType: (_b = (_a = TYPES[rawItem.value_type]) === null || _a === void 0 ? void 0 : _a[0]) !== null && _b !== void 0 ? _b : rawItem.value_type,
                                     comment: rawItem.comment,
                                     fieldName: "VAL.".concat(rawItem.field_name),
-                                    flags: rawItem.is_required === 'да' ? {
-                                        isRequired: rawItem.is_required === 'да'
-                                    } : undefined,
                                     fieldType: (_d = (_c = TYPES[rawItem.value_type]) === null || _c === void 0 ? void 0 : _c[1]) !== null && _d !== void 0 ? _d : rawItem.value_type,
                                     expression: rawItem.expression,
+                                    flags: {
+                                        isRequired: rawItem.is_required === 'да'
+                                    },
                                     targetSetDeclarations: {
                                         targetSetDeclaration: targetSetDeclarations
                                     }
                                 };
-                                if (!Boolean(rawItem.is_required === 'да')) {
+                                if (!((_e = processedItem.flags) === null || _e === void 0 ? void 0 : _e.isRequired)) {
                                     delete processedItem.flags;
                                 }
                                 if (rawItem.value_type === 'DICTIONARY') {
-                                    var _e = processedItem.valueType.split(','), multipleCase = _e[0], singleCase = _e[1];
+                                    var _f = processedItem.valueType.split(','), multipleCase = _f[0], singleCase = _f[1];
                                     processedItem.valueType = rawItem.multiple === 'да' ? multipleCase : singleCase;
                                 }
                                 return processedItem;

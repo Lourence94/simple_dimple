@@ -232,17 +232,17 @@ async function excelWork(path: string) {
                         valueType: TYPES[rawItem.value_type as keyof typeof TYPES]?.[0] ?? rawItem.value_type,
                         comment: rawItem.comment,
                         fieldName: `VAL.${rawItem.field_name}`,
-                        flags: rawItem.is_required === 'да' ? {
-                                isRequired: rawItem.is_required === 'да'
-                            } : undefined,
                         fieldType: TYPES[rawItem.value_type as keyof typeof TYPES]?.[1] ?? rawItem.value_type,
                         expression: rawItem.expression,
+                        flags: {
+                            isRequired: rawItem.is_required === 'да'
+                        },
                         targetSetDeclarations:{
                             targetSetDeclaration: targetSetDeclarations
                         }
                     }
 
-                    if(!Boolean(rawItem.is_required === 'да')) {
+                    if(!processedItem.flags?.isRequired) {
                         delete processedItem.flags
                     }
 
