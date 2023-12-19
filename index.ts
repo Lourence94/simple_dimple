@@ -254,7 +254,7 @@ async function excelWork(path: string) {
                 },
                 targetSetDeclarations: {
                     targetSetDeclaration: [{
-                        iucKeywords: ['DOCUMENT', 'NAVIGATOR', ...iucDeclarations].join(', '),
+                        iucKeywords: ['DOCUMENT', 'NAVIGATOR', ...iucDeclarations.map(iuc => iuc.keyword)].join(', '),
                         valueMetadataDfm: "\n            caption = 'Entity id'\n            visible = false\n          "
                     }]
                 },
