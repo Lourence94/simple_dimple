@@ -35,20 +35,6 @@ async function excelWork(path: string) {
     const summary = workbook.getWorksheet('Summary')
     const dictionary = workbook.getWorksheet('Словари для атрибутов')
 
-    // const finalWorkbook = new ExcelJS.Workbook()
-    //
-    // if(summary) {
-    //     finalWorkbook.addWorksheet('Summary').addRows(summary.getSheetValues())
-    // }
-    //
-    //
-    // //Таблица Attributes -> основная ссылка на ВКЗ
-    // const attributesSheet = finalWorkbook.addWorksheet('Attributes')
-
-    /**
-     * Для группировки значений по имени группы, { 'Гибкие атрибуты задач': ['400001', КОД], ... }
-     */
-
     interface Group {
         entityId: string,
         additionalCode: string,
@@ -258,6 +244,7 @@ async function excelWork(path: string) {
                 .filter(iuc => !['NAVIGATION', 'DOCUMENT'].includes(iuc))
                 .map(uniqIuc => ({keyword: uniqIuc}))
 
+
             const defaultValues: AttributeDeclaration[] = [{
                 name: 'Id',
                 valueType: 'TNumberValue',
@@ -299,113 +286,6 @@ async function excelWork(path: string) {
             delete currentGroup.additionalCode
         }
     }
-
-
-    /**
-     * Замена значений с для окончательной таблицы
-     */
-    // Object.entries(groupedRawData).reduce<Group[]>((acc, group, index) => {
-    //     const [entityId, rawValues] = group
-    //     rawValues
-    //         .filter((value, index, arr) => {
-    //             return arr.map(item => item.name).indexOf(value.name) === index
-    //         })
-    //         .map((item, index) => {
-    //             acc.push([
-    //                 increment,
-    //                 result[groupKey][0],
-    //                 `${result[groupKey][1]}${item.name}`,
-    //                 TYPES[item.value_type as keyof typeof TYPES]?.[0] ?? item.value_type,
-    //                 `VAL.${item.field_name}`,
-    //                 TYPES[item.value_type as keyof typeof TYPES]?.[1] ?? item.value_type,
-    //                 item.is_required === 'да' ? 'true' : null,
-    //                 item.expression,
-    //                 item.caption
-    //             ])
-    //             increment += 1
-    //         })
-    //     increment = (index + 2) * 150
-    //     return acc
-    //
-    // }, [])
-    //
-    // // TargetSets
-    // // const targetSetsSheet = finalWorkbook.addWorksheet('TargetSets')
-    //
-    // const targetSetsData = Object.values(groupedAttributesData).reduce<any[][]>((acc, groupValues) => {
-    //     groupValues.map(item => {
-    //         const id = processedAttributesData.find(itemToFind => itemToFind?.[8] === item.caption)?.[0]
-    //         acc.push([
-    //             id,
-    //             item.iuc,
-    //             item.caption,
-    //             item.groupIndex,
-    //             item.groupName,
-    //             item.orderIndex,
-    //             undefined,
-    //             (!Boolean(item.readOnlyEdits === 'да') || Boolean(item.expression)).toString(),
-    //             undefined,
-    //             undefined,
-    //             item.field_type === 'DATE' ? 'dtkDate' : undefined,
-    //             item.field_type === 'DATE' ? 'tkFullTime' : undefined,
-    //             item.defaultValue
-    //         ])
-    //     })
-    //     return acc
-    // }, [])
-
-    // const attTable = attributesSheet.addTable({
-    //     name: 'Attributes',
-    //     ref: 'A1',
-    //     headerRow: true,
-    //     style: {
-    //         theme: 'TableStyleMedium2',
-    //         showRowStripes: true,
-    //     },
-    //     columns: [
-    //         { name: 'id', filterButton: true},
-    //         { name: 'group_id', filterButton: true },
-    //         { name: 'name', filterButton: true },
-    //         { name: 'value_type', filterButton: true },
-    //         { name: 'field_name', filterButton: true },
-    //         { name: 'field_type', filterButton: true },
-    //         { name: 'is_required', filterButton: true },
-    //         { name: 'expression', filterButton: true },
-    //         { name: 'caption' }
-    //     ],
-    //     rows: processedAttributesData
-    // })
-    //
-    // targetSetsSheet.addTable({
-    //     name: 'TargetSets',
-    //     ref: 'A1',
-    //     headerRow: true,
-    //     style: {
-    //         theme: 'TableStyleMedium2',
-    //         showRowStripes: true,
-    //     },
-    //     columns: [
-    //         { name: 'attr_id', filterButton: true},
-    //         { name: 'iuc', filterButton: true },
-    //         { name: 'caption', filterButton: true },
-    //         { name: 'groupIndex', filterButton: true },
-    //         { name: 'groupName', filterButton: true },
-    //         { name: 'orderIndex', filterButton: true },
-    //         { name: 'linesHeight', filterButton: true },
-    //         { name: 'readOnlyEdits', filterButton: true },
-    //         { name: 'precision', filterButton: true },
-    //         { name: 'step', filterButton: true },
-    //         { name: 'dateTimeKind', filterButton: true },
-    //         { name: 'timeKind', filterButton: true },
-    //         { name: 'initString', filterButton: true },
-    //     ],
-    //     rows: targetSetsData
-    // })
-    //
-    // attTable.removeColumns(8, 1)
-    //
-    // attTable.commit()
-    // await finalWorkbook.xlsx.writeFile(finalPath);
 
     const template = {
         '@xsi:schemaLocation': 'http://argustelecom.ru/inventory/model-metadata http://argustelecom.ru/inventory/model-metadata/metamodel_1_0.xsd',
