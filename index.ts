@@ -254,6 +254,10 @@ async function excelWork(path: string) {
                     return processedItem
                 })
 
+            const iucDeclarations = Array.from(new Set(groupedRawData[entityId].map(rawItem => rawItem.iuc)))
+                .filter(iuc => !['NAVIGATION', 'DOCUMENT'].includes(iuc))
+                .map(uniqIuc => ({keyword: uniqIuc}))
+
             const defaultValues: AttributeDeclaration[] = [{
                 name: 'Id',
                 valueType: 'TNumberValue',
@@ -263,7 +267,7 @@ async function excelWork(path: string) {
                 },
                 targetSetDeclarations: {
                     targetSetDeclaration: [{
-                        iucKeywords: 'DOCUMENT, NAVIGATOR',
+                        iucKeywords: ['DOCUMENT', 'NAVIGATOR', ...iucDeclarations].join(', '),
                         valueMetadataDfm: "\n            caption = 'Entity id'\n            visible = false\n          "
                     }]
                 },
@@ -288,12 +292,6 @@ async function excelWork(path: string) {
                     }]
                 }
             }]
-
-            const iucDeclarations = Array.from(new Set(groupedRawData[entityId].map(rawItem => rawItem.iuc)))
-                .filter(iuc => !['NAVIGATION', 'DOCUMENT'].includes(iuc))
-                .map(uniqIuc => ({keyword: uniqIuc}))
-
-
 
             currentGroup.attributeDeclarations.attributeDeclaration = [...defaultValues, ...attDeclarations]
             currentGroup.iucDeclarations.iucDeclaration = iucDeclarations
